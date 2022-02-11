@@ -1,6 +1,8 @@
       program deb_gis_bin5_mod7_3v166103
 * -------------------------- ciclo iniziale con il loop
 
+* Linux versione senza libraria per aptire le finestre, gira sul file comandi
+
 * correzione betamin 28/10/2020
 
 * aggiunta modifica ponte  5/12/2019
