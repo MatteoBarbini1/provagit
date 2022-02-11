@@ -480,7 +480,7 @@ c      erosione/deposito per differenze di altezza
 	character*5256 fileComandi, fileHeader, fileEleNuovo, fileBC, fileout
 	character*5256 fileVC, fileLog, file_finale, fileERR
 	character*5256 file_Internal_Outputs, file_Inlet_Outlet, file_hErod
-        character*5256 fileLandChar, fileLandUse, fileSOL1, fileSOL2c 
+        character*5256 fileLandChar, fileLandUse, fileSOL1, fileSOL2 
 	character*5256 fileSOL3
 	character*5256 fileSOL4, fileSOL5,fileCstar, fileErodibilita 
 	character*5256 fileSforzoPlatea
