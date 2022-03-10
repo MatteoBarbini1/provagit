@@ -9,13 +9,14 @@
 	integer  N_stati, N_max_striscia, i_mini
 	integer  N_step_entrain, j_finEntrain, i_coordQ, i_coordt
 	integer  iiiiii, ii_iniz, i_file_out, i_check_massa_max, i_file77
-      integer  N_CPUS, N_threads, NESTED, N_thre1, N_thre2, N_thre3
-      integer  N_thre5,N_thre4, tot_Nsorg1
-	integer  N_sezioni_interne, N_internal_output_file, N_internal_DT
+      integer  intFileERR
+	logical  boolFileERR
+	
+	integer N_sezioni_interne, N_internal_output_file, N_internal_DT
 
        integer i_maxValle  ! 11/7/2017
 
-	integer Num_celle_routing, Num_celle_bacino, Num_celle_routing_int
+	integer Num_celle_routing, Num_celle_bacino
 	
 	integer j_entr, i_suoli, N_suoli, i_cont_suoli, i_DQ
 	integer j_vel_max, j_vel_stramaz_max, i_celle2, i_rout
@@ -72,6 +73,8 @@
 
 	integer, allocatable ::  ic_routing(:)
 	integer, allocatable ::  ir_routing(:)
+      integer, allocatable ::  ic_sol(:) !BARBINI
+	integer, allocatable ::  ir_sol(:) !BARBINI
 	
 	integer, allocatable ::  i_file_sforzoPlatea(:)
       
@@ -84,12 +87,15 @@
       integer, allocatable ::  ic_internValle(:,:)         ! 11 lug 2017
 	integer, allocatable ::  ir_internValle(:,:)         ! 11 lug 2017
 
+      integer, allocatable :: error_map(:,:)
+      
       integer IC_celmax, IR_celmax   ! 7/9/2017
 
       integer i_file88  ! 25/10/2017
 
       integer  i_jj(8)  ! 29/4/2019
-	
+	integer, allocatable :: cell_eros(:,:)
+      integer CPUs, TotalCPUs
 
 	real Vtot, UU(8), QQQQQ
 	real V_dep_unif, V_dep_belang, V_eros_unif, V_eros_belang, V_DA, V_DB
@@ -138,7 +144,7 @@
 	real, allocatable :: t_fin(:)
 	real, allocatable :: t_inizio(:)
       real, allocatable :: t_1d(:,:)
-	real*8, allocatable :: Q_input(:,:)
+	real, allocatable :: Q_input(:,:)
 	real, allocatable :: Q_input_tot(:,:)
 	!real, allocatable :: Q_out(:,:)   ! 14/01/2013
 	!real, allocatable :: V_fuori_uscito_DT(:)   ! 14/01/2013
@@ -287,6 +293,10 @@
                real, allocatable :: tauMax_y(:,:)
                real, allocatable :: energia(:,:)
                real, allocatable :: densita(:,:)
+               real, allocatable :: Zero_esterno(:,:)
+               real, allocatable :: Eros_spon(:,:)
+               real, allocatable :: mat_sponde(:,:)
+               real, allocatable :: Coll_sponde(:)
                
                real, allocatable :: Vx(:,:)
                real, allocatable :: Vy(:,:)
@@ -387,7 +397,7 @@
 
                
                
-                               	
+      real  Eros_spon_tot, Depos_spon_tot                       	
 	
 	
       real pixsize, or_easting, or_northing, esterno, undefined
@@ -404,6 +414,7 @@
 	
 	real  V_solido_fuori_uscito_totale, V_solido_fuoriuscito_DT
 	
+	real    V_entrato_DT, V_solid_input_DT
 
 
 
@@ -417,12 +428,8 @@ c      erosione/deposito per differenze di altezza
 	real Q_CONTORNO_TOTALE, ttttt, Qmax_contorno, Qmax_input
 
 	real  t_step_entrainDT, V_eros_prima, DT_entrain, tt_max
-	real  t_minimo, Qseconda, h_defluit, sum_attivata
+	real  t_minimo, Qseconda, h_defluit, sum_attivata, V_inp, V1, V2
 	real  VOLUME_ENTRATO_IDROGRAMMI
-      real  VOLUME_ENTRATO_IDRO, VOLUME_ENTRATO_IDRO_1
-      real  VOLSOL_ENTRATO_IDROGRAMMI
-      real  VOLSOL_ENTRATO_IDRO, VOLSOL_ENTRATO_IDRO_1
-      
 	
 	real Control_Output, Output_control, Output_massimo
 	real Output, Intern_Output,  DT_Internal_Output, rapp_tempi 
@@ -435,9 +442,10 @@ c      erosione/deposito per differenze di altezza
 	
 	real Cmedio, Cstar, Cmax, Volume_solido_eroso, Volume_solido_depositato
 	real Volume_solido, h_solid, Volume_solido_eroso_step
-	real Volume_solido_depositato_step, C_limite_deposito
+	real Volume_solido_depositato_step, C_limite_deposito, V_solid_input
 	real total_solid, V_solid, volume_solido_intrappolato
-	real spessore
+	real spessore, VS_inp, VS1, VS2,  VOLSOL_ENTRATO_IDROGRAMMI
+      real str(8)
 	real Check_VS_max, Check_VS, t_check_VS_max, C_input_routing
 	real differenza_solido, differ, dh_neg1, dh_neg2, trapped_solid_depth
 	real volume_solido_intrappolato_STEP, V_dep_step_C, tempo_scrittura
@@ -466,8 +474,8 @@ c      erosione/deposito per differenze di altezza
 
        real celle_attive_sez ! 25/10/2017
 
-          
-          real cq  ! 7/10/2019
+       integer Nsez   
+       real cq  ! 7/10/2019
           
 	
 
@@ -477,11 +485,10 @@ c      erosione/deposito per differenze di altezza
 	character*5256 fileFormat, fileEle, fileCh, fileSorgente, fileBM
 	character*5256 fileIdrogramma, fileErosione, fileVel_inf_eros
 	character*5256 fileAng_inf_eros, fileTempi_Allag, fileControllo 
-	character*5256 fileComandi, fileHeader, fileEleNuovo, fileBC, fileout
-	character*5256 fileVC, fileLog, file_finale, fileERR
+	character*5256 fileComandi, fileHeader, fileEleNuovo, fileBC
+	character*55256 fileVC, fileLog, file_finale, fileERR, file_finale_1
 	character*5256 file_Internal_Outputs, file_Inlet_Outlet, file_hErod
-        character*5256 fileLandChar, fileLandUse, fileSOL1, fileSOL2 
-	character*5256 fileSOL3
+	character*5256 fileLandChar, fileLandUse, fileSOL1, fileSOL2, fileSOL3
 	character*5256 fileSOL4, fileSOL5,fileCstar, fileErodibilita 
 	character*5256 fileSforzoPlatea
 	character*5256 fileStrutture ! aggiunta del 21/09/2015
@@ -489,7 +496,7 @@ c      erosione/deposito per differenze di altezza
       character*5256 fileVel_sup_dep, fileAng_sup_dep   ! 13/9/2017
       character*5256 fileSOL6   ! 13/9/2017
       character*5256 fileElePonti, fileTxtPonti ! 5/12/2019
-
+      character*5256 File_coll_spond
 	character*5256, allocatable :: filename_flowdepth(:)
 	character*5256, allocatable :: filename_freesurf(:)
 	character*5256, allocatable :: filename_erosiondepth(:)
@@ -520,6 +527,19 @@ c      erosione/deposito per differenze di altezza
 	character*16 pippo_char
 	character*3 Sorgente
 
+       Type sezioneInterna
+        !integer i
+        integer ic
+        integer ir
+      end type sezioneInterna
+
+      Type sezioniInt
+        Type(sezioneInterna), allocatable :: seqCell(:)
+        integer direzioni(4) ![Nord, Sud, Ovest, Est]
+        integer index
+      end type sezioniInt
+      
+      Type(sezioniInt), allocatable :: sezioniInterne (:)
 
 
 
