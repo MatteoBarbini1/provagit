@@ -445,7 +445,7 @@ c      erosione/deposito per differenze di altezza
 	real Volume_solido_depositato_step, C_limite_deposito, V_solid_input
 	real total_solid, V_solid, volume_solido_intrappolato
 	real spessore, VS_inp, VS1, VS2,  VOLSOL_ENTRATO_IDROGRAMMI
-      real str(8)
+ 
 	real Check_VS_max, Check_VS, t_check_VS_max, C_input_routing
 	real differenza_solido, differ, dh_neg1, dh_neg2, trapped_solid_depth
 	real volume_solido_intrappolato_STEP, V_dep_step_C, tempo_scrittura
