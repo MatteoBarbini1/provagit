@@ -270,7 +270,7 @@ c       inserimento file velocità
 	integer, allocatable ::  i_cont2(:)  !Boundary condition *****
 
 		
-	real segno, str(8), pes, sumpes, pesk
+	real segno, pes, sumpes, pesk
 	real sumpesk, h_totale, V_totale, a, b 
 
 	
@@ -354,8 +354,7 @@ c       inserimento file velocità
 	write(*,*) 'insert the file comand name  = '
 !	read(*,*) fileComandi
 	Write(*,'(a200)')fileComandi
-	Write(*,*) 'pres any kay to start'
-	read(*,*) 
+	Write(*,*) 'pres any kay to start' 
 
 
       call readinput
@@ -6349,7 +6348,7 @@ c       da zero
                   icj = ic_sorg1(ij,jj) + i_sh_col(j)
                   irj = ir_sorg1(ij,jj) + i_sh_row(j)
 
-	str(j) = 0.0
+
 	
 	
 	if (ele(icj,irj).ne.esterno) then
