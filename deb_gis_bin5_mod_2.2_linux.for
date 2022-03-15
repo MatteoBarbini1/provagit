@@ -2,234 +2,8 @@
 * -------------------------- Linux version
 * -------------------------- ProvaDeb155_completo_par
 * -------------------------- Versione deb_gis_bin5_mod_2.2.for
-
-* operazione di media sulla QM entrante ed uscente (29/4/2019)
-
-* introduzione calcolo velocità media in base alla conservazione della quantità di moto
-
-* AGGIUNTA CALCOLO SFORZO PILE   (25/12/2018)
-
-* modifica calcolo ws_max che viene eseguito solo se la profondità è superiore a 0.0
-
-* introduzione calcolo velocità media in base alla conservazione della quantità di moto
-
-* introduzione dell'operazione di media della velocità uscenti (12/7/2019)
-
-* aggiunta contributi entranti per il calcolo delle componenti Vx e Vy  (6/7/2018)
-
-* modifica calcolo erosione: limite velocità a 10 m/s
-
-* correzione routine scrittura file SMS
-
-*  scrittura file DEM, Vx, Vy, FreeSurface disabilitata
-
-* modifica scrittura file sezione vecchio
-
-*  celerità limitata da 50 m/s
-
-* scrittura nuovo file sezione con scrittura di tutti i valori di portata
-
-* aggiunta scrittura flow depth + deposition depth (spessore) nel file sezioni
-
-* scrittura file conc per visualizzazione in SMS (18/9/2017)
-
-* introduzione parametri deposito distribuiti (13/9/2017)
-
-* Introduzione limite sulla celerita_massima
-
-* DT_entrain posto uguale al DT_  (prima era 60 secondi)
-
-* nuovo calcolo portata uscente con introduzione file delle sezioni contigue di valle 
-
-* spostamento calcolo Q_entrata nel solo ciclo delle celle delle sezioni
-
-* spostamento del calcolo portata di Q_entrata nel ciclo delle celle attive
-
-* nuovo calcolo valore mediato (21/07/2017) di flow depth, ws, ele ed ele_iniz per la sezione
-
-* nuova sezione con identificativo 999.0 a valle di ogni sezione
-
-* controllo che l'angolo di erosione non sia minore od uguale di quello di deposito (28/9/2016)
-
-* sostituzione aggiornamento file ele con eros_tot invece che con dh_sed (28/9/2016)
-
-* file velcelsol: aggiustamento (28/9/2016)
-
-* eliminazione file soltxt a fine simulazione (19/9/2016)
-
-* correzione errore sulla velocità media (la componente nella direzione 7 non veniva conteggiata mentre nella 5 due volte) 11/3/2015
-
-* scrittura file pre deposito del minimum flow routing  7/2/2016
-
-* snellimento della condizione di inerodibilita 29/1/2016
-*introduzione nella condizione di inerodibilità dello spessore erodibile (ad es strato di terreno su opera civile) 28/1/2016 
-
-
-* eliminati una istruzione quota_finale = .....  ed un else dopo if (dh_neg.lt.0.0) dopo il deflusso a moto uniforme il 27/1/2016
-* eliminati cicli dh_eros_tot = 0.0 e do j = 1, K con dh_eros_tot = dh_eros_tot + dh_eros(j) dopo il
-* confronto tra differenze solido con solido depositato dopo il deflusso a stramazzo (27/1/2016)
-* 
-* DT_Internal_Output  in secondi (22/9/2015)
-* ulteriore correzioni sezione interne 19/8/2015
-
-* correzione contorno del 16/8/2015
-
-* eliminazione velocita massima e direz vel
-
-* calcolo sforzo su platea
-
-* introduzione calcolo velocita media
-
-* introduzione calcolo sforzo al fondo
-
-* eliminazione scrittura file .out
-
-*  output in secondi
-
-* scrittura file ws e conc e direz vel max
-
-* correzione DT da 5 a 0.5 secondi
-
-* correzione errore contorno
-
-* aggiunta control_eros in tre punti
-
-* correzione su errore iniziale con secondo idrogramma di input
-
-*  correzione errore sul calcolo del deposito intrappolato
-
-*  aggiunta della cstar dipendente dal suolo
-
-*  controllo sul numero e identificativi del file uso suolo raster e txt
-
-*  scrittura portata fondo, tiranti e concentrazione dei file interni mediati su 5 secondi
-
-*  scrittura portata fondo, tiranti e concentrazione dei file interni mediati su 1 secondo
-
-*  bifase
-
-*  riempimento celle di input attivate nei time step successivi all'inizio simulazione
-
-*  modifica dei volumi di entrata iniziali
-
-*  unificazione sia per input costante che variabile della concentrazione
-
-*  inserimento concentrazione solida nell'idrogramma di input
-
-*  eliminazione del numero di passi temporali dal file dell'idrogramma di entrata  
-
-*  sistemazione per inserimento idrogramma totale di input
-
-*  creazione file .2dm e soluzioni per h e wse per SMS
-
-*  introduzione Cmedio  >  C_limite per deflusso intrappolato
-
-*  con equazione stramazzo originale (hi - zj) invece che (hi-hj)
-
-*  con max flow_depth_deposition
-
-*  con file .sol per sms
-
-*  con max_flow_depth e velocity
-
-*  Q_entrata
-
-*  erosione solo con dh/dt>0
-
-*  output dei file DEM
-
-*  calcolo erosione come deposito
-
-*  aggiunta controlllo concentrazioni per erosione e deposito
-
-*  aggiunta file risultati finali
-
-*  aggiustamento file di internal output
-
-*  controllo se le celle routing appartengano al bordo NO
-
-*  introduzione out time step
-
-*   introduzione coeff moltiplicatore per deposito sotto angolo limite
-
-*   introduzione deposito deflusso intrappolato
-
-*   introduzione angolo limite per deposito in zone pianeggianti (per deflusso a stramazzo)
-
-*    introduzione angolo limite per deposito in zone pianeggianti (solo deflusso a moto uniforme)
-
-*    calcola deposito solo in direzione j_vel_max per il deflusso a stramazzo se h_vol_str = 0
-
-*    calcola deposito solo in direzione j_vel_max per il deflusso a moto uniforme
-
-*     condensa del calcolo dell'erosione/deposito in un unico ciclo al termine
-*     del calcolo idraulico
-
-*     correzione errore sulla determinazione file direzioni di velocità: 
-*     nel caso di mobile bed in alcuni casi con velocità non nulla dava zero 
-*     perchè non ricalcolava le direzioni di deflusso quando variava la quota del fondo
-*     (aggiustamento subroutine ricalibratura1 e ricalibratura2
-
-*     condensa del calcolo della velocità massima e della corrispondente direzione
-*     un unico ciclo
-
-*     ri-aggiustamento file di output
-
-*     condensa del calcolo della velocità massima e della corrispondente direzione
-*     un unico ciclo
-
-*     eliminazione file .flt DEM dal file comandi ed aggiustamento file output
-
-*     utilizzo file uso suolo
-
-*     numero libero di file di output
-
-*     eliminazione time step
-
-*      aggiunta warning per probabile superamento del numero massimo di celle striscia 
-
-*      modifica h_routing
-
-*      modifica h_erosione solo per erosione
-
-*      
-*     ulteriore modifica condizioni al contorno (eliminazione N_celle_contorno_MAX) ed eliminazione delle celle sorgenti
-*     da quelle al contorno
-
-*      modifica condizioni al contorno
-
-*     rispetto a v4 cambio estensione da ctr a log e nome file flt di output uguale al file comandi
-
-
-*     rispetto a v3 modifica dh = - h_vol_str - ddh_tot
-
-*     rispetto a v2 modifica dh_entrata_unif e belangier
-
-*     rispetto a v1 la modifica del 22 Ottobre 2010 per il deflusso a stramazzo
-*      
-*      rispetto a deb_gis_bin sono eliminati i time steps dalla variabili allocate
-
-*      rispetto al deb_gis_bin_mod due costanti di Egashira e nuova compatibilit\'a erosione e 
-*      spostamento aggiornamento celle per deflusso ed erosione/deposito da prima ciclo differenze altezza a fine ciclo 
-*      aggiornamento profondità celle striscia mediante dh invece che h = h - ddh_tot - h_vol_str
-
-*     modifica controllo continuità ed oscillazioni per le celle striscia
-*     mette erosione e deposito in una subroutine
-
-
-c       senza la modifica sulle celle striscia che diventano sorgente 
-
-
-c       correzione errore sulla condizione al contorno   8 Agosto 2011
-c       introduzione controllo a fine ciclo che le profondità siano positive
-c       con scrittura del file .err in caso contrario
-
-
-c       inserimento file velocità
       
       use mdl_bin5
-	use dflib
-      use msflib !BERNARD			
       use OMP_lib !BARBINI
     
       integer i, j, icj, irj, m, otto, nerc, kx, ky, N_iji, jij, ijij
@@ -242,14 +16,14 @@ c       inserimento file velocità
 	integer i_file, i_file2, i_file3, i_file4, i_file5, i_file6
 
 	integer  N_DT, ic1, ir1, iij
-      integer  ic, ir, iijj
+        integer  ic, ir, iijj
 	integer  i_max, i_cont, i_cont_file
 
 **************************************************** MARZO 09 Boundary condition **************
 	integer  N_righe_mezzo, N_colonne_mezzo, N_lati_contorno, i1 , i2
 	integer  N_celle_contorno, N_colonne, N_righe, diff_i1, diff_i2
 	integer  ic_iniz_sx, ir_iniz_sx, ic_iniz_dx, ir_iniz_dx 
-      integer  ic_fin_sx, ir_fin_sx, ic_fin_dx, ir_fin_dx 
+        integer  ic_fin_sx, ir_fin_sx, ic_fin_dx, ir_fin_dx 
 	integer  i_shh_col(5), i_shh_row(5), attivazione, indMB1 indMB2 !BERNARD
 	integer  i_qhh_col(4), i_qhh_row(4)
 	integer  ic_bc_1(10), ic_bc_2(10), ir_bc_1(10), ir_bc_2(10)
@@ -262,10 +36,10 @@ c       inserimento file velocità
 	integer, allocatable ::  i_cont2(:)  !Boundary condition *****
       
       
-      integer, allocatable ::  contaCelleSezInt(:) 
+        integer, allocatable ::  contaCelleSezInt(:) 
 	logical controlla_attivazione !BERNARD
 	
-      real segno, pes, sumpes, pesk
+        real segno, pes, sumpes, pesk
 	real sumpesk, h_totale, V_totale,ValoreEsterno
 
 	
@@ -275,7 +49,7 @@ c       inserimento file velocità
 	real control2, control3
 
 
-      real zero, coeff, cel, cel_max
+        real zero, coeff, cel, cel_max
 	real DT, h_vol, h_vol_str, Qtot, beta, betamin
 	real h_fin_destinaz_max, h_fin_origine, h_fin(8), vero, dh_cost_tot
 	real h_iniz_destinaz_max, allarme2, h_fine, hh, tempo_iniziale
@@ -292,7 +66,7 @@ c       inserimento file velocità
 ****************************************************
 
 
-      real h_vol_str25, ddh_tot25, h_vol_str28, ddh_tot28, dh25, dh28
+        real h_vol_str25, ddh_tot25, h_vol_str28, ddh_tot28, dh25, dh28
 	real dh25fing, dh28fing, dh25_26g, dh28_27g, dh25_26s, dh28_27s
 	real dh25fins, dh28fins
 	real h_solido_pre, pippo1, con_prima
@@ -309,7 +83,7 @@ c       inserimento file velocità
       real flag_int_tempo_finale 
       
       
-      character*5256 file_name, file_name2, fileElebis, buffer !BERNARD
+      character*4000 file_name, file_name2, fileElebis, buffer !BERNARD
 	character*120  dat, ris
       character*70    allarme, ttt, tempo1
 	character*70   tempo2, pippok1, pippok2, pippok3, pippok4, pippok5
@@ -339,29 +113,36 @@ c       inserimento file velocità
 	
 * ----------------------------------------------------------------------
       TotalCPUS = OMP_get_num_procs()
-      
+	
+      call getarg(1,fileComandi,CPUs)
+	       
       open ( 0,file='Out1.txt',mode='write')
 
-      open (20,file='out2.txt',mode='write')
+      open (20,file='out2.txt')
       
       open (30,file='out3.txt',mode='write')
-      
-      
+	      
       fileFormat       =      REPEAT(' ', 256)
       fileCh           =      REPEAT(' ', 256)
       file_Internal_Outputs = REPEAT(' ', 256)
       fileIdrogramma   =      REPEAT(' ', 256)
       fileLandUse      =      REPEAT(' ', 256)
-	fileLandChar     =      REPEAT(' ', 256)
+       	fileLandChar     =      REPEAT(' ', 256)
       fileElePonti     =      REPEAT(' ', 256)
       fileTxtPonti     =      REPEAT(' ', 256)
-      
-      write(0,'("filecomandi = ",a100)') filecomandi
-      Write(0,'("Reading the imput comnad")')
-      
-      
+
+	write(*,*) ' start DFRM model'
+	write(*,*) 'insert the name of the input file comand'
+
+      write(*,'("filecomandi = ",a100)') filecomandi
+      Write(*,'("Reading the imput comnad")')
+
+	write(*,*) 'open'
           call readinput
+	Write(*,*) "decode input"
           call decodeinput (20)
+	Write(*,*) "hdr preparing"
+
           call hdrprepare
       
       call time(orario)
@@ -397,7 +178,7 @@ c       inserimento file velocità
       endif
 
 		
-	open ( 10,file=fileLog)
+	open ( 10,file=fileLog, mode ='write')
 
 ************************  APERTURA FILE LOG Novembre 2010 
       
@@ -705,7 +486,7 @@ c       inserimento file velocità
         allocate (file_ponti(no_columns,no_rows))  !  5/12/2019
         allocate (ele_ponti(no_columns,no_rows))  !  5/12/2019
         allocate (quota_critica_ponte(no_columns,no_rows))  !  5/12/2019
-   
+	allocate (error_map(no_columns,no_rows))   
       
       j_dir = 0
       j_vel = 0  ! 20 maggio 2015
@@ -786,8 +567,8 @@ c       inserimento file velocità
 
 	endif
 
-		if (CPUs.gt.TotalCPUS) CPUs = TotalCPUS
-      write  (10,'(''Number of setted threads:'',
+!		if (CPUs.gt.TotalCPUS) CPUs = TotalCPUS
+        write  (10,'(''Number of setted threads:'',
 	1i4,'' / '',i4,'' Threads'')') CPUS, int(TotalCPUS)      
 
 		!  file volumi e portate nel tempo
@@ -875,12 +656,12 @@ c       inserimento file velocità
 
 		
 	write(10,*)
-      
+      Error_map = esterno
       ele=esterno
       do irow = 1, no_rows
 	    do icol = 1, no_columns
            
-            Ch(icol,irow) = esterno
+              Ch(icol,irow) = esterno
 	      Erod(icol,irow) = esterno
 	      No_erod(icol,irow) = esterno
 	           	      
@@ -1568,7 +1349,7 @@ c      controllo che il DEM file e il file raster di uso suolo si sovrappongano 
            do icol = 1, no_columns
 
 	           if (ele(icol,irow).ne.esterno) then
-	
+		     error_map(icol,irow) = 0.0	
 	             do i = 1, N_suoli
 	                   if (Suolo(icol,irow).eq.uso_suolo(i)) then
 	                   
@@ -3703,7 +3484,7 @@ c	write(9,*) pippok2
 	write(*,'("N_file_Output =",3x,i10)') N_file_Output
 
 
-      allocate (t_file(N_file_output))
+        allocate (t_file(N_file_output))
 	allocate (flag(N_file_output))
 	allocate (tempo_file(N_file_output))
 	allocate (t_out_minuti(N_file_output))
@@ -3716,17 +3497,17 @@ c	write(9,*) pippok2
 	allocate (filename_DEM(N_file_output))
 	allocate (filename_conc(N_file_output))
 	allocate (filename_VelCella(N_file_output))
-      allocate (VolumeEntrato(N_file_output))   ! 1/8/2017
-      allocate (VolumeSolidoEntrato(N_file_output))   ! 1/8/2017
+        allocate (VolumeEntrato(N_file_output))   ! 1/8/2017
+        allocate (VolumeSolidoEntrato(N_file_output))   ! 1/8/2017
 
-      allocate (filename_velocit_uscente(N_file_output))   ! 13/7/2018
+        allocate (filename_velocit_uscente(N_file_output))   ! 13/7/2018
 	allocate (filename_direz_vel_uscente(N_file_output))   ! 1/8/2017
 
-      allocate (filename_Vx(N_file_output))  ! 29/4/2019
+        allocate (filename_Vx(N_file_output))  ! 29/4/2019
 	allocate (filename_Vy(N_file_output))  ! 29/4/2019
 !	 allocate (filename_VV(N_file_output)) ! 29/4/2019
 
-      i_entrato = 0  ! 1/8/2017
+        i_entrato = 0  ! 1/8/2017
 	
 	
 
@@ -5794,14 +5575,14 @@ c      WRite(1299,*) OMP_get_num_procs(), OMP_get_num_threads()
       write(1399,*) "Parallel code"
       WRite(1399,*) OMP_get_num_procs(), OMP_get_num_threads() 
 !      
-      file_name2 = "_parallel_vel.m"
-	retint = scan (fileLog,'.')
-      if (retint > 1) then
-	     file_finale = fileLog(1:retint-1)//'_'//file_name2
-      endif
-      open(1499,file = file_finale)
-      write(1499,'(" clear all")')
-      write(1499,*) "Parallel code"
+!      file_name2 = "parallel_vel.m"
+!	retint = scan (fileLog,'.')
+!      if (retint > 1) then
+!	     file_finale = fileLog(1:retint-1)//'_'//file_name2
+!      endif
+!      open(1499,file = file_finale, mode ='write')
+!      write(1499,'(" clear all")')
+!      write(1499,*) "Parallel code"
 !      
 !            file_name2 = "_parallel_t.m"
 !	retint = scan (fileLog,'.')
@@ -6037,7 +5818,7 @@ c       da zero
              do j = 1,8
                   icj = ic_sorg1(ij,jj) + i_sh_col(j)
                   irj = ir_sorg1(ij,jj) + i_sh_row(j)
-	            str(j) = 0.0
+	          
 	
 	if (ele(icj,irj).ne.esterno) then
 	  if (val_sorg(icj,irj).ne.100) then
@@ -6305,7 +6086,7 @@ c Point 3.3 Calcolo dt
         
         DT = Courant*lato_cella/cel_max
         !DT =0.5 !CEL_fissa
-        write(10,'(4f14.6)') cel_max, cel_max_sor, t, t_dopo   
+           
         !
 	else
 	
@@ -6315,7 +6096,7 @@ c Point 3.3 Calcolo dt
        write(10,'("time step is setted to 5 seconds")') 
 	
 	   DT = 5.0
-	 write(10,'(4f14.6)') cel_max, cel_max_sor, t, t_dopo
+	
 	endif
 	      
       t_dopo = t + DT   ! 15/01/2013
@@ -6347,7 +6128,7 @@ c
       V_solid_input = V_solid_input + V_solid_input_DT_1
       Vaffluito = Vaffluito + Vaffluito_1 + Vaffluito_2
       Check_massa = abs(V_entrato-VOLUME_ENTRATO_IDROGRAMMI)/V_entrato
-      write(10,'(3f14.6)')V_entrato,V_solid_input
+      
 c Point 1.3 Verifica calolo volumi in ingresso 
       
       if (Check_massa.gt.0.02) write(10,'("MASS CONSERVATION OF INPUT 
@@ -8140,9 +7921,9 @@ c      causa deposito/erosione
       tt8 = omp_get_wtime()
 !$OMP end single nowait
 !$OMP single 
-       Write (1499,'(i8,18f14.6)')ii,tt1,tt1_1,tt1_2,tt1_3,tt1_4,
-     1  tt1_5,tt1_6,tt1_7,tt1_8,tt1_9,tt1_10,tt1_11,tt1_12,tt1_13,tt1_14
-     1 tt2
+!       Write (1499,'(i8,18f14.6)')ii,tt1,tt1_1,tt1_2,tt1_3,tt1_4,
+!     1  tt1_5,tt1_6,tt1_7,tt1_8,tt1_9,tt1_10,tt1_11,tt1_12,tt1_13,tt1_14
+!     1 tt2
       tt9 = omp_get_wtime()
 !$OMP end single nowait
       
@@ -8357,9 +8138,9 @@ c      profondita' istante successivo
 
        
        if (h_solido(icol,irow).lt.0.0) then
+	error_map(icol,irow) = error_map(icol,irow) + 1
 
-
-      
+      if(error_map(icol,irow).eq.1)then
       if(boolFileERR) then !BERNARD writing ERR file
       write(19,'("WARNING NEGATIVE SOLID DEPTH AT CELL ic and ir = "
      1,2x,2I7)') icol, irow
@@ -8393,12 +8174,14 @@ c      profondita' istante successivo
       write(10,'("Noeroded condition",2x,f10.1)') 
      1no_erod(icol,irow)
       endif
-      
+      endif
       endif
 
       if (conc(icol,irow).gt.1.0.and.h(icol,irow).gt.h_routing) then  ! aggiunto il 3/12/2017
+	error_map(icol,irow) = error_map(icol,irow) + 1
           
 
+      if(error_map(icol,irow).eq.1)then
       
       if(boolFileERR) then
           
@@ -8420,7 +8203,7 @@ c      profondita' istante successivo
      1) h(icol,irow), h_solido(icol,irow)
       write(10,'("previous and actual sediment concentration values",4x
      1,2f20.10)') conc_prima, Conc(icol,irow)
-      
+      end if
       end if 
       endif
 	
@@ -8496,7 +8279,9 @@ c      profondita' istante successivo
 
 
 	  if (h(icol,irow).lt.0.0) then   
+	error_map(icol,irow) = error_map(icol,irow) + 1
             
+        if(error_map(icol,irow).eq.1)then
             
 	   if(boolFileERR) then !BERNARD writing ERR file	   
 	     write(19,'("WARNING FLOW DEPTH VALUE MINUS THAN 0")')
@@ -8521,7 +8306,7 @@ c      profondita' istante successivo
        write(10,'("column and row indexes",2x,2I6)') icol,irow
        write(10,'("flow depth (m) = ",1x,f20.10)') h(icol, irow)
          end if
-         
+	 end if         
 	   endif
 
 	        endif
@@ -8664,7 +8449,7 @@ c filename_flowdepth(i_file)
  !$OMP Section 
       num_open = 95000
       open(num_open,file=filename_flowdepth(i_file),form='BINARY',
-     1         access='DIRECT',recl=no_columns*4)
+     1	mode = 'write')
               
         file_name = filename_flowdepth(i_file) 
         retint = scan (file_name,'.')
@@ -8680,7 +8465,8 @@ c filename_flowdepth(i_file)
 c filename_erosiondepth(i_file)
  !$OMP Section 
       num_open =97000
-	open(num_open,file=filename_erosiondepth(i_file),form='BINARY')
+	open(num_open,file=filename_erosiondepth(i_file),form='BINARY',
+     1	mode = 'write')
       
       	file_name = filename_erosiondepth(i_file)
         
@@ -8697,7 +8483,7 @@ c filename_erosiondepth(i_file)
 c filename_Vx(i_file)	
  !$OMP Section
       num_open = 98000
-      open(98000,file=filename_Vx(i_file),form='BINARY')
+      open(98000,file=filename_Vx(i_file),form='BINARY',mode='write')
       
       	file_name = filename_Vx(i_file)
         
@@ -8714,7 +8500,9 @@ c filename_Vx(i_file)
 c filename_Vy(i_file)
  !$OMP Section  
       num_open = 99000
-      open(num_open,file=filename_Vy(i_file),form='BINARY')
+      open(num_open,file=filename_Vy(i_file),form='BINARY',
+     1  mode = 'write')
+
       	  
 	  file_name = filename_Vy(i_file)
         
@@ -8730,7 +8518,8 @@ c filename_Vy(i_file)
 c filename_VelCella(i_file)	    
  !$OMP Section
       num_open = 198000
-      open(num_open,file=filename_VelCella(i_file),form='BINARY')
+      open(num_open,file=filename_VelCella(i_file),form='BINARY',
+     1mode = 'write' )
       	file_name = filename_VelCella(i_file)
         
         retint = scan (file_name,'.')
@@ -8749,7 +8538,8 @@ c filename_VelCella(i_file)
 c filename_conc(i_file)        
   !$OMP Section  
        num_open = 199500
-      open(199500,file=filename_conc(i_file),form='BINARY')
+      open(199500,file=filename_conc(i_file),form='BINARY',
+     1  mode = 'write')
       	  
 	  file_name = filename_conc(i_file)
         
@@ -8765,7 +8555,8 @@ c filename_conc(i_file)
 c filename_direz_vel_uscente(i_file)
  !$OMP Section  
       num_open = 199502
-      open(199502,file=filename_direz_vel_uscente(i_file),form='BINARY')
+      open(199502,file=filename_direz_vel_uscente(i_file),form='BINARY',
+     1  mode = 'write')
       	  
 	  file_name = filename_direz_vel_uscente(i_file)
         
@@ -10883,6 +10674,24 @@ c         file di output raster  celle allagate - tempi di allagamento
 		    enddo
 		    
 		    close(num_open)
+!$OMP section
+	 file_name2 = "error_map.flt"
+	retint = scan (fileLog,'.')
+      if (retint > 1) then
+	     file_finale = fileLog(1:retint-1)//'_'//file_name2
+      endif
+      num_open=299
+      retint = scan (file_finale,'.')
+      if (retint > 1) then
+       fileHeader = file_finale(1:retint-1)//'.hdr'
+      if (fileHeader /= fileFormat) call HdrWrite1 (fileHeader,num_open)
+      endif
+      
+	open (num_open,file=file_finale,form='BINARY')      
+      do ir = 1, no_rows
+          write (num_open) (error_map(ic,ir),ic=1,no_columns) 
+	enddo
+      close (num_open)
 !$OMP end parallel sections				
 			    
       
@@ -11773,65 +11582,68 @@ C nuova versione calcolo pericolosità
 
 
 
-       subroutine readinput
+       subroutine readinput 
        use mdl_bin5
+	real CPUs1
 ! ----------------------------------------------------------------------
-      open (100,file=fileComandi,mode='read')
+      open (111, file = fileComandi ,mode = 'read' )
 ! .................................................................
-      read  (100,'(30x,a)',end=200) fileFormat
-  !    read  (100,'(30x,a)',end=200) fileEle
-  !    read  (100,'(30x,a)',end=200) file_Internal_Outputs
-      read  (100,'(30x,a)',end=201) fileIdrogramma 
-      read  (100,'(35x,f10.2)',end=200) control1
+      read  (111,'(30x,a)',end=200) fileFormat
+  !    read  (111,'(30x,a)',end=200) fileEle
+  !    read  (111,'(30x,a)',end=200) file_Internal_Outputs
+      read  (111,'(30x,a)',end=201) fileIdrogramma 
+      read  (111,'(35x,f10.2)',end=200) control1
 	if (control1.eq.1.0) then
-      read  (100,'(30x,a)',end=202) fileLandUse
-	read  (100,'(30x,a)',end=203) fileLandChar
+      read  (111,'(30x,a)',end=202) fileLandUse
+	read  (111,'(30x,a)',end=203) fileLandChar
 	else
-      read  (100,'(35x,f10.3)',end=200) Chezy
+      read  (111,'(35x,f10.3)',end=200) Chezy
+
 	endif
-	read  (100,'(35x,f10.1)',end=200) Intern_Output
+	read  (111,'(35x,f10.1)',end=200) Intern_Output
 	if (Intern_Output.eq.1.0) then
-      read  (100,'(30x,a)',end=204) file_Internal_Outputs
-      read  (100,'(30x,a)',end=205) file_Internal_OutputsValle
-      read  (100,'(40x,f15.1)',end=200) DT_Internal_Output
+      read  (111,'(30x,a)',end=204) file_Internal_Outputs
+      read  (111,'(30x,a)',end=205) file_Internal_OutputsValle
+      read  (111,'(40x,f15.1)',end=200) DT_Internal_Output
 	endif
-      read  (100,'(35x,f15.2)',end=200) tempo_finale
-      read  (100,'(35x,f10.3)',end=200) Coeff_Ang_Limit
-!	read  (100,'(40x,f15.1)',end=200) DT_Internal_Output
-	read  (100,'(52x,f10.2)',end=200) Limit_Angle
-      read  (100,'(35x,f10.3)',end=200) Courant
-      read  (100,'(35x,f10.5)',end=200) h_routing
-	read  (100,'(35x,f10.2)',end=200) control_eros
+      read  (111,'(35x,f15.2)',end=200) tempo_finale
+      read  (111,'(35x,f10.3)',end=200) Coeff_Ang_Limit
+!	read  (111,'(40x,f15.1)',end=200) DT_Internal_Output
+	read  (111,'(52x,f10.2)',end=200) Limit_Angle
+      read  (111,'(35x,f10.3)',end=200) Courant
+      read  (111,'(35x,f10.5)',end=200) h_routing
+	read  (111,'(35x,f10.2)',end=200) control_eros
 	if (control_eros.eq.1.0) then
 	if (control1.eq.2.0) then
-	read  (100,'(35x,f10.3)',end=200) Vel_erosion
-	read  (100,'(35x,f10.3)',end=200) Ang_erosion
-      read  (100,'(35x,f10.3)',end=200) Vel_dep_sup    ! modifica 13/9/2017
-	read  (100,'(35x,f10.3)',end=200) ang_deposito      ! modifica 13/9/2017
+	read  (111,'(35x,f10.3)',end=200) Vel_erosion
+	read  (111,'(35x,f10.3)',end=200) Ang_erosion
+      read  (111,'(35x,f10.3)',end=200) Vel_dep_sup    ! modifica 13/9/2017
+	read  (111,'(35x,f10.3)',end=200) ang_deposito      ! modifica 13/9/2017
 	endif
-      read  (100,'(35x,f10.2)',end=200) Egash_eros
-	read  (100,'(35x,f10.2)',end=200) Egash_dep
-      !read  (100,'(35x,f10.4)',end=200) Vel_dep_sup       ! modifica 13/9/2017
-	!read  (100,'(35x,f10.5)',end=200) ang_deposito       ! modifica 13/9/2017
-	read  (100,'(35x,f10.5)',end=200) h_erosione
-	read  (100,'(35x,f10.3)',end=200) Cmedio
-	read  (100,'(35x,f10.3)',end=200) Cstar
+      read  (111,'(35x,f10.2)',end=200) Egash_eros
+	read  (111,'(35x,f10.2)',end=200) Egash_dep
+      !read  (111,'(35x,f10.4)',end=200) Vel_dep_sup       ! modifica 13/9/2017
+	!read  (111,'(35x,f10.5)',end=200) ang_deposito       ! modifica 13/9/2017
+	read  (111,'(35x,f10.5)',end=200) h_erosione
+	read  (111,'(35x,f10.3)',end=200) Cmedio
+	read  (111,'(35x,f10.3)',end=200) Cstar
 	endif
-	read  (100,'(35x,f10.3)',end=500) DT_OUTPUT_MINUTI
-!      read  (100,'(50x,i7)',end=600) i_flag
-      read  (100,'(30x,i7)',end=208) CPUS     !BARBINI
-	read  (100,'(30x,a)',end=206) fileBC
-      read  (100,'(30x,a)',end=206) fileElePonti
-      read  (100,'(30x,a)',end=206) fileTxtPonti
-!	read  (100,'(30x,a)',end=200) fileBM 
-      read  (100,'(30x,i1)',end=207) intFileERR
+	read  (111,'(35x,f10.3)',end=500) DT_OUTPUT_MINUTI
+!      read  (111,'(50x,i7)',end=600) i_flag
+      read  (111,'(30x,i7)',end=208) CPUS1     !BARBINI
+	read  (111,'(30x,a)',end=206) fileBC
+      read  (111,'(30x,a)',end=206) fileElePonti
+      read  (111,'(30x,a)',end=206) fileTxtPonti
+!	read  (111,'(30x,a)',end=200) fileBM 
+      read  (111,'(30x,i1)',end=207) intFileERR
       if (intFileERR==1)then
          boolfileERR=.false.
       else
          boolfileERR=.true.
       end if   
+	write(*,*) 'ok3'
 	! .................................................................
-      close (100)
+      close (111)
 
       return
       
@@ -11885,7 +11697,6 @@ C nuova versione calcolo pericolosità
        use mdl_bin5
       character*256 NoCString
 ! .................................................................
-  !    fileLog = fileComandi
 
       open   (100,file=fileComandi)
       write  (100,'(''Header                   File:'',a)')  trim(NoCStr

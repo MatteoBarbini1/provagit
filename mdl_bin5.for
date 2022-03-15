@@ -298,6 +298,8 @@
                real, allocatable :: mat_sponde(:,:)
                real, allocatable :: Coll_sponde(:)
                
+	
+
                real, allocatable :: Vx(:,:)
                real, allocatable :: Vy(:,:)
                real, allocatable :: Vx_max(:,:)
@@ -482,38 +484,38 @@ c      erosione/deposito per differenze di altezza
 
 
 
-	character*5256 fileFormat, fileEle, fileCh, fileSorgente, fileBM
-	character*5256 fileIdrogramma, fileErosione, fileVel_inf_eros
-	character*5256 fileAng_inf_eros, fileTempi_Allag, fileControllo 
-	character*5256 fileComandi, fileHeader, fileEleNuovo, fileBC
-	character*55256 fileVC, fileLog, file_finale, fileERR, file_finale_1
-	character*5256 file_Internal_Outputs, file_Inlet_Outlet, file_hErod
-	character*5256 fileLandChar, fileLandUse, fileSOL1, fileSOL2, fileSOL3
-	character*5256 fileSOL4, fileSOL5,fileCstar, fileErodibilita 
-	character*5256 fileSforzoPlatea
-	character*5256 fileStrutture ! aggiunta del 21/09/2015
-      character*5256 file_Internal_OutputsValle ! 11/7/2017
-      character*5256 fileVel_sup_dep, fileAng_sup_dep   ! 13/9/2017
-      character*5256 fileSOL6   ! 13/9/2017
-      character*5256 fileElePonti, fileTxtPonti ! 5/12/2019
-      character*5256 File_coll_spond
-	character*5256, allocatable :: filename_flowdepth(:)
-	character*5256, allocatable :: filename_freesurf(:)
-	character*5256, allocatable :: filename_erosiondepth(:)
-	character*5256, allocatable :: filename_velmax(:)
-	character*5256, allocatable :: filename_veldir(:)
-	character*5256, allocatable :: filename_DEM(:)
-	character*5256, allocatable :: filename_conc(:)
-	character*5256, allocatable :: filename_VelCella(:)
-      character*5256, allocatable :: filename_velocit_uscente(:)
-	character*5256, allocatable :: filename_direz_vel_uscente(:)
-      character*5256, allocatable :: filename_Vx(:)
-      character*5256, allocatable :: filename_Vy(:)
+	character*4000 fileFormat, fileEle, fileCh, fileSorgente, fileBM
+	character*4000 fileIdrogramma, fileErosione, fileVel_inf_eros
+	character*4000 fileAng_inf_eros, fileTempi_Allag, fileControllo 
+	character*4000 fileComandi, fileHeader, fileEleNuovo, fileBC
+	character*4000 fileVC, fileLog, file_finale, fileERR, file_finale_1
+	character*4000 file_Internal_Outputs, file_Inlet_Outlet, file_hErod
+	character*4000 fileLandChar, fileLandUse, fileSOL1, fileSOL2, fileSOL3
+	character*4000 fileSOL4, fileSOL5,fileCstar, fileErodibilita 
+	character*4000 fileSforzoPlatea
+	character*4000 fileStrutture ! aggiunta del 21/09/2015
+        character*4000 file_Internal_OutputsValle ! 11/7/2017
+        character*4000 fileVel_sup_dep, fileAng_sup_dep   ! 13/9/2017
+        character*4000 fileSOL6   ! 13/9/2017
+        character*4000 fileElePonti, fileTxtPonti ! 5/12/2019
+        character*4000 File_coll_spond
+	character*4000, allocatable :: filename_flowdepth(:)
+	character*4000, allocatable :: filename_freesurf(:)
+	character*4000, allocatable :: filename_erosiondepth(:)
+	character*4000, allocatable :: filename_velmax(:)
+	character*4000, allocatable :: filename_veldir(:)
+	character*4000, allocatable :: filename_DEM(:)
+	character*4000, allocatable :: filename_conc(:)
+	character*4000, allocatable :: filename_VelCella(:)
+        character*4000, allocatable :: filename_velocit_uscente(:)
+	character*4000, allocatable :: filename_direz_vel_uscente(:)
+        character*4000, allocatable :: filename_Vx(:)
+        character*4000, allocatable :: filename_Vy(:)
       
 	
 	
 	character*120 intestazione_uso_suolo
-      character*50 pippone
+        character*50 pippone
 
 	character*256 text
       character*25  tipofile
