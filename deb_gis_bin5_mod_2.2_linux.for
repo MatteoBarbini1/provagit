@@ -113,14 +113,38 @@
 	
 * ----------------------------------------------------------------------
       TotalCPUS = OMP_get_num_procs()
+      CPUs = TotalCPUS
 	
-      call getarg(1,fileComandi,CPUs)
-	       
-      open ( 0,file='Out1.txt',mode='write')
+      call getarg(1,fileComandi)
+      fileLog = fileComandi
 
-      open (20,file='out2.txt')
-      
-      open (30,file='out3.txt',mode='write')
+                retint = scan (fileLog,'.')
+      if (retint > 1) then
+
+      fileLog = fileLog(1:retint-1)//'_out1.txt'
+      endif
+      open ( 0,file=fileLog,mode='write')
+
+
+      fileLog = fileComandi
+
+                retint = scan (fileLog,'.')
+      if (retint > 1) then
+
+      fileLog = fileLog(1:retint-1)//'_out2.txt'
+      endif
+
+      open (20,file=fileLog,mode='write')
+
+      fileLog = fileComandi
+
+                retint = scan (fileLog,'.')
+      if (retint > 1) then
+
+      fileLog = fileLog(1:retint-1)//'_out3.txt'
+      endif
+
+      open (30,file=fileLog,mode='write')
 	      
       fileFormat       =      REPEAT(' ', 256)
       fileCh           =      REPEAT(' ', 256)
@@ -8444,32 +8468,33 @@ c      profondita' istante successivo
        
 
 *point 14.0 scrittura risultati intermed
-!$OMP Sections private (file_name,retint,fileHeader,num_open,nrec,ky,kx)
+!$OMP Sections private (i,j,file_name,retint,fileHeader,num_open)
+!$OMP& private (nrec,ky,kx)
+
 c filename_flowdepth(i_file)
  !$OMP Section 
       num_open = 95000
-      open(num_open,file=filename_flowdepth(i_file),form='BINARY',
-     1	mode = 'write')
+
+	file_name=filename_flowdepth(i_file)	
+        open(num_open,file=file_name,form='BINARY',mode = 'write')
               
-        file_name = filename_flowdepth(i_file) 
         retint = scan (file_name,'.')
       if (retint > 1) then
       fileHeader = file_name(1:retint-1)//'.hdr'
       if (fileHeader /= fileFormat) call HdrWrite1 (fileHeader,num_open)
       endif
-	  do nrec = 1, no_rows
-          ky = nrec 
-          write (95000,REC=nrec)  (h(kx,ky),kx=1,no_columns)
+	 do ky = 1, no_rows
+          
+          write (95000)  (h(kx,ky),kx=1,no_columns)
         enddo  
 	close(num_open)
 c filename_erosiondepth(i_file)
  !$OMP Section 
       num_open =97000
-	open(num_open,file=filename_erosiondepth(i_file),form='BINARY',
-     1	mode = 'write')
-      
+
       	file_name = filename_erosiondepth(i_file)
-        
+        open(num_open,file=file_name,form='BINARY',mode = 'write')
+
         retint = scan (file_name,'.')
       if (retint > 1) then
       fileHeader = file_name(1:retint-1)//'.hdr'
@@ -8483,9 +8508,9 @@ c filename_erosiondepth(i_file)
 c filename_Vx(i_file)	
  !$OMP Section
       num_open = 98000
-      open(98000,file=filename_Vx(i_file),form='BINARY',mode='write')
       
       	file_name = filename_Vx(i_file)
+        open(num_open,file=file_name,form='BINARY',mode = 'write')
         
         retint = scan (file_name,'.')
       if (retint > 1) then
@@ -8500,11 +8525,10 @@ c filename_Vx(i_file)
 c filename_Vy(i_file)
  !$OMP Section  
       num_open = 99000
-      open(num_open,file=filename_Vy(i_file),form='BINARY',
-     1  mode = 'write')
 
       	  
 	  file_name = filename_Vy(i_file)
+        open(num_open,file=file_name,form='BINARY',mode = 'write')
         
         retint = scan (file_name,'.')
       if (retint > 1) then
@@ -8518,9 +8542,9 @@ c filename_Vy(i_file)
 c filename_VelCella(i_file)	    
  !$OMP Section
       num_open = 198000
-      open(num_open,file=filename_VelCella(i_file),form='BINARY',
-     1mode = 'write' )
+
       	file_name = filename_VelCella(i_file)
+        open(num_open,file=file_name,form='BINARY',mode = 'write')
         
         retint = scan (file_name,'.')
       if (retint > 1) then
@@ -8538,10 +8562,9 @@ c filename_VelCella(i_file)
 c filename_conc(i_file)        
   !$OMP Section  
        num_open = 199500
-      open(199500,file=filename_conc(i_file),form='BINARY',
-     1  mode = 'write')
-      	  
+
 	  file_name = filename_conc(i_file)
+          open(num_open,file=file_name,form='BINARY',mode = 'write')
         
         retint = scan (file_name,'.')
       if (retint > 1) then
@@ -8555,10 +8578,10 @@ c filename_conc(i_file)
 c filename_direz_vel_uscente(i_file)
  !$OMP Section  
       num_open = 199502
-      open(199502,file=filename_direz_vel_uscente(i_file),form='BINARY',
-     1  mode = 'write')
+
       	  
-	  file_name = filename_direz_vel_uscente(i_file)
+        file_name = filename_direz_vel_uscente(i_file)
+        open(num_open,file=file_name,form='BINARY',mode = 'write')
         
         retint = scan (file_name,'.')
       if (retint > 1) then
@@ -10862,7 +10885,7 @@ c         file di output raster  celle allagate - tempi di allagamento
 		    
 		       
 		    
-		  if (t_dopo.ge.DT_OUTPUT_MINUTI)   call crea_file_sms
+!		  if (t_dopo.ge.DT_OUTPUT_MINUTI)   call crea_file_sms
 		   
 		  		    
 		    
