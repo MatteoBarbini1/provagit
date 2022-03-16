@@ -7780,7 +7780,7 @@ c       da zero
              do j = 1,8
                   icj = ic_sorg1(ij,jj) + i_sh_col(j)
                   irj = ir_sorg1(ij,jj) + i_sh_row(j)
-	            str(j) = 0.0
+	   
 	
 	if (ele(icj,irj).ne.esterno) then
 	  if (val_sorg(icj,irj).ne.100) then
