@@ -1,0 +1,45 @@
+Bootstrap: docker
+From: ubuntu
+
+
+
+%files
+	/home/matteo/test_cont/proda.for /home/prova.for  
+        /home/matteo/test_cont/a.out /home/a.out
+	
+%post
+
+	apt-get update
+	apt-get install -y gnupg 
+	apt-get install -y wget software-properties-common	
+	apt-get update
+
+        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB -O - | apt-key add -
+        echo "deb https://apt.repos.intel.com/oneapi all main" | tee /etc/apt/sources.list.d/oneAPI.list
+	apt-get -y update
+	
+	add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
+	apt-get -y install intel-hpckit	
+	
+	apt-get install -y git
+	mkdir  $SINGULARITY_ROOTFS/my_file
+
+
+
+
+	
+$runscript
+
+
+	cd $SINGULARITY_ROOTFS/opt/intel/oneapi/
+	. ./setvars.sh        
+
+	cd $SINGULARITY_ROOTFS/my_file	
+	
+	git clone https://github.com/MatteoBarbini1/provagit.git
+	
+	ifort -c mdl_bin5.for
+
+	ifort deb_gis_bin5.for mdl_bin5.o -o DFRM_pro.out
+
+	ifort deb_gis_bin5_mod_2.2_linux.for mld_bin5.o -o DFRM_par_2_2.out 
