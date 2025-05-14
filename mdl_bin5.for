@@ -32,11 +32,25 @@
       integer  N_ponti  ! 5/12/2019
       integer  N_celle_ponti_max    ! 5/12/2019
 	
+      integer N_celle_wet
+      integer N_sorgenti_valle !MBAR contiamo le celle di valle delle sorgenti
+      
+      integer  j_check(4)                     !MBAR 15/01/2025
+      integer  i_qhh_col(4), i_qhh_row(4)     !MBAR 15/01/2025 
+      
+      integer, allocatable :: n_nodi(:)       !MBAR 15/01/2025 
+      integer, allocatable :: ic_sor_valle(:),ir_sor_valle(:) !MBAR 15/01/2025
+      
       integer, allocatable :: N_celle_ponti(:)  ! 5/12/2019
       integer, allocatable :: ic_ponti(:,:) ! 5/12/2019
       integer, allocatable :: ir_ponti(:,:) ! 5/12/2019
-
-	integer, allocatable ::  Nsorg1(:)
+      
+      integer, allocatable :: cella_bacino(:,:)  !MBAR 14/09/2023
+	integer, allocatable :: celle_wet(:,:)     !MBAR 14/09/2023  
+      integer, allocatable :: n_celle_sol(:)     !MBAR 14/09/2023
+      integer, allocatable :: n_celle_rout(:)
+      
+      integer, allocatable ::  Nsorg1(:)
 	integer, allocatable ::  Nstr1(:)
 	integer, allocatable ::  ic_sorg1(:,:)
 	integer, allocatable ::  ir_sorg1(:,:)
@@ -65,6 +79,8 @@
 	integer, allocatable ::  i_tmin(:)
 	integer, allocatable ::  j_dir(:,:,:)
 	integer, allocatable ::  j_vel(:,:,:)   ! 20 maggio 2015
+      
+      integer, allocatable :: dir_cella(:,:) !mod_def_int
 	
 	
 	integer, allocatable :: N_celle_sez_intern(:)
@@ -87,7 +103,10 @@
       integer, allocatable ::  ic_internValle(:,:)         ! 11 lug 2017
 	integer, allocatable ::  ir_internValle(:,:)         ! 11 lug 2017
 
-      integer, allocatable :: error_map(:,:)
+      real, allocatable :: error_map(:,:)
+      
+      integer ic_corner(4),ir_corner(4), coef_mm(4)  
+      integer,allocatable :: n_node(:)
       
       integer IC_celmax, IR_celmax   ! 7/9/2017
 
@@ -97,7 +116,7 @@
 	integer, allocatable :: cell_eros(:,:)
       integer CPUs, TotalCPUs
 
-	real Vtot, UU(8), QQQQQ
+	real Vtot, UU(8), QQQQQ,Coeff_int
 	real V_dep_unif, V_dep_belang, V_eros_unif, V_eros_belang, V_DA, V_DB
 	real U_stramaz_max
 	real Limit_Angle, sin_Limit_Angle
@@ -108,6 +127,7 @@
       real V_entrante, V_uscente, QM_entrante, QM_uscente     !  29/4/2019
       real control_ele_ponti, control_file_ponti ! 5/12/2019
 
+     
 	real, allocatable :: val_sorg(:,:)
 	!real, allocatable :: val_contorno(:,:)
       real, allocatable :: val(:,:)
@@ -128,6 +148,9 @@
 	real, allocatable :: senteta_crit(:,:)
       real, allocatable :: dh_sed(:,:)
 	real, allocatable :: Eros_tot(:,:)
+      real, allocatable :: Eros_grav(:,:)
+      real, allocatable :: Eros_bel(:,:)
+      real, allocatable :: Eros_int(:,:)
 	real, allocatable :: sen_teta(:,:,:)
 	real, allocatable :: senteta(:,:,:)
 	real, allocatable :: peso(:,:,:)
@@ -139,6 +162,7 @@
 
 	real, allocatable :: dh_entrata_unif(:,:)
 	real, allocatable :: dh_entrata_Bel(:,:)
+      real, allocatable :: dh_entrata_int(:,:)
 
       !real, allocatable :: t(:)  15/01/2013
 	real, allocatable :: t_fin(:)
@@ -298,8 +322,6 @@
                real, allocatable :: mat_sponde(:,:)
                real, allocatable :: Coll_sponde(:)
                
-	
-
                real, allocatable :: Vx(:,:)
                real, allocatable :: Vy(:,:)
                real, allocatable :: Vx_max(:,:)
@@ -328,7 +350,18 @@
                real, allocatable :: file_strutture(:,:)  ! aggiunta del 21/09/2015
                real, allocatable :: file_strutturecontigue(:,:) ! aggiunta del 23/09/2015
 
-
+               real, allocatable :: Q_2d(:,:)
+               real, allocatable :: Q_t2d(:,:)
+               real, allocatable :: celle_routing(:,:)
+               real, allocatable :: routing_type(:)
+               real, allocatable :: Param(:,:)
+               real, allocatable :: Flux_x(:,:)
+               real, allocatable :: Flux_y(:,:)
+               real, allocatable :: Q_1(:)
+               real, allocatable :: Q_int(:)
+               integer, allocatable :: index_celle_1(:)
+               integer, allocatable :: index_celle(:)
+               
 *************************************** PILE 25/12/2018 *********************************
 
        real, allocatable :: pile(:)  ! 25/12/2018
@@ -373,7 +406,12 @@
       real, allocatable :: Q_uscita_solido(:) ! 25/10/2017       
       real, allocatable :: Averaged_flow_depth(:) ! 25/10/2017    
       
-      
+               real, allocatable :: Vx_media(:)
+               real, allocatable :: Vy_media(:)
+               real, allocatable :: Vx_media_sez(:)
+               real, allocatable :: Vy_media_sez(:)
+               real, allocatable :: Vx_media_sez_int(:)
+               real, allocatable :: Vy_media_sez_int(:) 
       
    !    real, allocatable :: dh_x(:,:)   ! 12/7/2018
    !    real, allocatable :: dh_y(:,:)   ! 12/7/2018   
@@ -395,7 +433,7 @@
    !     real, allocatable :: VV_max(:,:)   !  29/4/2019
 
         
-          
+      real, allocatable :: Boundary(:,:,:)    
 
                
                
@@ -447,7 +485,7 @@ c      erosione/deposito per differenze di altezza
 	real Volume_solido_depositato_step, C_limite_deposito, V_solid_input
 	real total_solid, V_solid, volume_solido_intrappolato
 	real spessore, VS_inp, VS1, VS2,  VOLSOL_ENTRATO_IDROGRAMMI
- 
+      real str(8)
 	real Check_VS_max, Check_VS, t_check_VS_max, C_input_routing
 	real differenza_solido, differ, dh_neg1, dh_neg2, trapped_solid_depth
 	real volume_solido_intrappolato_STEP, V_dep_step_C, tempo_scrittura
@@ -480,43 +518,43 @@ c      erosione/deposito per differenze di altezza
        real cq  ! 7/10/2019
           
 	
+      integer dir_U_Nan(4,8)
 
+      integer chezy_cont, eros_mom_cont
 
-
-
-	character*4000 fileFormat, fileEle, fileCh, fileSorgente, fileBM
-	character*4000 fileIdrogramma, fileErosione, fileVel_inf_eros
-	character*4000 fileAng_inf_eros, fileTempi_Allag, fileControllo 
-	character*4000 fileComandi, fileHeader, fileEleNuovo, fileBC
-	character*4000 fileVC, fileLog, file_finale, fileERR, file_finale_1
-	character*4000 file_Internal_Outputs, file_Inlet_Outlet, file_hErod
-	character*4000 fileLandChar, fileLandUse, fileSOL1, fileSOL2, fileSOL3
-	character*4000 fileSOL4, fileSOL5,fileCstar, fileErodibilita 
-	character*4000 fileSforzoPlatea
-	character*4000 fileStrutture ! aggiunta del 21/09/2015
-        character*4000 file_Internal_OutputsValle ! 11/7/2017
-        character*4000 fileVel_sup_dep, fileAng_sup_dep   ! 13/9/2017
-        character*4000 fileSOL6   ! 13/9/2017
-        character*4000 fileElePonti, fileTxtPonti ! 5/12/2019
-        character*4000 File_coll_spond
-	character*4000, allocatable :: filename_flowdepth(:)
-	character*4000, allocatable :: filename_freesurf(:)
-	character*4000, allocatable :: filename_erosiondepth(:)
-	character*4000, allocatable :: filename_velmax(:)
-	character*4000, allocatable :: filename_veldir(:)
-	character*4000, allocatable :: filename_DEM(:)
-	character*4000, allocatable :: filename_conc(:)
-	character*4000, allocatable :: filename_VelCella(:)
-        character*4000, allocatable :: filename_velocit_uscente(:)
-	character*4000, allocatable :: filename_direz_vel_uscente(:)
-        character*4000, allocatable :: filename_Vx(:)
-        character*4000, allocatable :: filename_Vy(:)
+	character*5256 fileFormat, fileEle, fileCh, fileSorgente, fileBM
+	character*5256 fileIdrogramma, fileErosione, fileVel_inf_eros
+	character*5256 fileAng_inf_eros, fileTempi_Allag, fileControllo 
+	character*5256 fileComandi, fileHeader, fileEleNuovo, fileBC
+	character*5256 fileVC, fileLog, file_finale, fileERR, file_finale_1
+	character*5256 file_Internal_Outputs, file_Inlet_Outlet, file_hErod
+	character*5256 fileLandChar, fileLandUse, fileSOL1, fileSOL2, fileSOL3
+	character*5256 fileSOL4, fileSOL5,fileCstar, fileErodibilita 
+	character*5256 fileSforzoPlatea
+	character*5256 fileStrutture ! aggiunta del 21/09/2015
+      character*5256 file_Internal_OutputsValle ! 11/7/2017
+      character*5256 fileVel_sup_dep, fileAng_sup_dep   ! 13/9/2017
+      character*5256 fileSOL6   ! 13/9/2017
+      character*5256 fileElePonti, fileTxtPonti ! 5/12/2019
+      character*5256 File_coll_spond
+	character*5256, allocatable :: filename_flowdepth(:)
+	character*5256, allocatable :: filename_freesurf(:)
+	character*5256, allocatable :: filename_erosiondepth(:)
+	character*5256, allocatable :: filename_velmax(:)
+	character*5256, allocatable :: filename_veldir(:)
+	character*5256, allocatable :: filename_DEM(:)
+	character*5256, allocatable :: filename_conc(:)
+	character*5256, allocatable :: filename_VelCella(:)
+      character*5256, allocatable :: filename_velocit_uscente(:)
+	character*5256, allocatable :: filename_direz_vel_uscente(:)
+      character*5256, allocatable :: filename_Vx(:)
+      character*5256, allocatable :: filename_Vy(:)
       
 	
 	
 	character*120 intestazione_uso_suolo
-        character*50 pippone
-
+      character*50  pippone
+      character*70  DFRM_VERSION
 	character*256 text
       character*25  tipofile
       character*10  byteorder
@@ -529,7 +567,8 @@ c      erosione/deposito per differenze di altezza
 	character*16 pippo_char
 	character*3 Sorgente
 
-       Type sezioneInterna
+           ! BERNARD PER LA CREAZIONE DI SEZIONI 999
+      Type sezioneInterna
         !integer i
         integer ic
         integer ir
@@ -537,15 +576,15 @@ c      erosione/deposito per differenze di altezza
 
       Type sezioniInt
         Type(sezioneInterna), allocatable :: seqCell(:)
+        real D_ele(4)
         integer direzioni(4) ![Nord, Sud, Ovest, Est]
         integer index
       end type sezioniInt
       
+
       Type(sezioniInt), allocatable :: sezioniInterne (:)
 
 
-
-      
-      data     undefined / -8888.0 /, esterno / -9999.0 /
+      data     undefined / -8888.0 /
 * ----------------------------------------------------------------------
       end module 
